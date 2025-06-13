@@ -1,0 +1,47 @@
+Here are the table schemas for the Amazon Athena database <athena_schemas>.
+<athena_schemas>
+<athena_schema>
+CREATE EXTERNAL TABLE "your_database"."your.table" (
+version int,
+account_id string,
+interface_id string,
+srcaddr string,
+dstaddr string,
+srcport int,
+dstport int,
+protocol bigint,
+packets bigint,
+bytes bigint,
+start bigint,
+end bigint,
+action string,
+log_status string)
+PARTITIONED BY (
+aws-account-id string,
+aws-service string,
+aws-region string,
+year string,
+month string,
+day string,
+hour string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ' '
+WITH SERDEPROPERTIES (
+'EXTERNAL'='true',
+'skip.header.line.count'='1')
+STORED AS INPUTFORMAT
+'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+OUTPUTFORMAT
+'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION
+'s3://digite-aqui-seu-s3-bucket/'
+</athena_schema>
+</athena_schemas>
+Here are examples of Amazon Athena queries <athena_examples>.
+<athena_examples>
+<athena_example>
+SELECT srcaddr, sum(bytes) as bytes FROM "your_database"."your.table"
+group by srcaddr order by bytes desc limit 10;
+</athena_example>
+<athena_examples>
+
